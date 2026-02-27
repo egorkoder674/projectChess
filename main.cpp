@@ -1,5 +1,7 @@
 #include <iostream>
+#include "src/figures/Bishop.h"
 
 int main() {
-    std::cout << "leo commit test\n";
+    Bishop B(3,4);
+    std::cout << B.Coor().first << " " << B.Coor().second << '\n';
 }

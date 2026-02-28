@@ -1,1 +1,1 @@
-create README
+Hello this project was made for offline playing chess

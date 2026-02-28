@@ -4,5 +4,6 @@
 
 #ifndef PROJECT_BISHOP_H
 #define PROJECT_BISHOP_H
-
+int f(int x);
 #endif //PROJECT_BISHOP_H
+

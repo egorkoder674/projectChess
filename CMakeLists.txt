@@ -7,3 +7,6 @@ add_subdirectory(app)
 add_subdirectory(src)
 add_subdirectory(tests)
 
+add_executable(project main.cpp
+)
+

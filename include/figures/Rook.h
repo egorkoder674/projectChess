@@ -10,5 +10,6 @@ class Rook : public Piece {
 public:
     Rook(int row, int col, Color color);
     constexpr bool canMove(int new_row, int new_col) const override;
+    ~Rook() override = default;
 };
 #endif //PROJECT_ROOK_H

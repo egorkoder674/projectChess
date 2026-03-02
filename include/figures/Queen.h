@@ -9,6 +9,7 @@
 class Queen : public Piece{
 public:
     Queen(int row, int col, Color color);
-    bool canMove(int new_row, int new_col) const override;
+    constexpr bool canMove(int new_row, int new_col) const override;
+    ~Queen() override = default;
 };
 #endif //PROJECT_QUEEN_H

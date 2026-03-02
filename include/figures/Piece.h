@@ -1,4 +1,6 @@
 #ifndef PROJECT_FIGURES_H
+#include <cmath>
+
 enum class Color {
     White,
     Black

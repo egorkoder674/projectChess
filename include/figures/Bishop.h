@@ -4,6 +4,13 @@
 
 #ifndef PROJECT_BISHOP_H
 #define PROJECT_BISHOP_H
-int f(int x);
+#include "Piece.h"
+
+class Bishop : public Piece{
+public:
+    Bishop(int row, int col, Color color = Color::White);
+    constexpr bool canMove(int new_row, int new_col) const override;
+};
+
 #endif //PROJECT_BISHOP_H
 

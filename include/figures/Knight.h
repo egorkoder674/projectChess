@@ -5,11 +5,12 @@
 #ifndef PROJECT_KNIGHT_H
 #define PROJECT_KNIGHT_H
 #include "Piece.h"
+#include "Board.h"
 
 class Knight : public Piece {
 public:
     Knight(int row, int col, Color color);
-    constexpr bool canMove(int new_row, int new_col) const override;
+    constexpr bool canMove(int new_row, int new_col, const Board& board) const override;
     ~Knight() override = default;
 
 };

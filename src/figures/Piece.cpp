@@ -14,3 +14,8 @@ constexpr Color Piece::getColor() const {
     return _color;
 }
 
+constexpr bool Piece::isMoved() const {
+    return _isMoved;
+}
+
+

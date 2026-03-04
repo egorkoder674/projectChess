@@ -19,6 +19,7 @@ public:
     constexpr int getRow() const;
     constexpr int getCol() const;
     constexpr Color getColor() const;
+    constexpr bool isMoved() const;
     constexpr virtual bool canMove(int new_row, int new_col, const Board& board) const = 0;
     virtual ~Piece() = default;
 };

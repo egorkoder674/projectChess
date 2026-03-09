@@ -45,3 +45,19 @@ void BoardRenderer::draw(sf::RenderTarget &target) const {
         }
     }
 }
+
+void BoardRenderer::drawHighlight(sf::RenderTarget &target, int row, int col, const sf::Color &color) const {
+    int invertedRow = 7 - row;
+    sf::RectangleShape highlight(sf::Vector2f(cellSize - 5, cellSize - 5));
+
+    highlight.setPosition(sf::Vector2f(static_cast<float>(col * cellSize + 2.5f), static_cast<float>(invertedRow * cellSize + 2.5f)));
+
+    highlight.setFillColor(color);
+    target.draw(highlight);
+}
+
+int BoardRenderer::getCellSize() const {
+    return cellSize;
+}
+
+

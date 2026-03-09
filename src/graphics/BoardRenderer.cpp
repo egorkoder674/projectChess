@@ -17,3 +17,31 @@ void BoardRenderer::updateBoard(const std::vector<std::vector<std::string>>& new
     }
     boardState = newState;
 }
+
+void BoardRenderer::draw(sf::RenderTarget &target) const {
+    if (boardSprite.has_value()) {
+        target.draw(boardSprite.value());
+    }
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            const std::string& pieceName = boardState[row][col];
+            if (!pieceName.empty()) {
+                auto spriteOpt = textures.getSprite(pieceName);
+                if (spriteOpt.has_value()) {
+                    sf::Sprite sprite = spriteOpt.value();
+
+                    sf::FloatRect bounds = sprite.getLocalBounds();
+                    float offsetX = (cellSize - bounds.size.x) / 2.0f;
+                    float offsetY = (cellSize - bounds.size.y) / 2.0f;
+                    int invertedRow = 7 - row;
+
+                    sprite.setPosition(sf::Vector2f(col * cellSize + offsetX, invertedRow * cellSize + offsetY));
+                    target.draw(sprite);
+                }
+                else {
+                    std::cout << "BoardRenderer: undefined figure name: " << pieceName << "'\n";
+                }
+            }
+        }
+    }
+}

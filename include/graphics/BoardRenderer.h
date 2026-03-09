@@ -12,6 +12,7 @@ private:
 public:
     BoardRenderer(const TextureStorage& texStor);
     void setBoardSprite(const sf::Sprite& sprite);
+    void updateBoard(const std::vector<std::vector<std::string>>& newState);
 };
 
 

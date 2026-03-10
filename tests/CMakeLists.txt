@@ -12,6 +12,7 @@ enable_testing()
 add_executable(all_tests
         BishopTest.cpp
         RookTest.cpp
+        BoardTest.cpp
 
 )
 target_include_directories(all_tests PUBLIC ${CMAKE_SOURCE_DIR}/include/figures)

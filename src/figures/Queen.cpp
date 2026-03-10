@@ -1,8 +1,16 @@
+#include "Bishop.h"
+#include "Board.h"
+#include "Pawn.h"
+#include "King.h"
+#include "Knight.h"
+#include "Rook.h"
 #include "Queen.h"
+#include "Empty.h"
+#include "cmath"
 
 Queen::Queen(int row, int col, Color color): Piece(row, col, color) {}
 
-constexpr bool Queen::canMove(int new_row, int new_col, const Board& board) const {
+bool Queen::canMove(int new_row, int new_col, const Board& board) const {
     int difRow = new_row - _row;
     int difCol = new_col - _col;
     if (difRow == 0 && difCol == 0)

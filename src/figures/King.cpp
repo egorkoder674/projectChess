@@ -1,8 +1,16 @@
+#include "Bishop.h"
+#include "Board.h"
+#include "Pawn.h"
 #include "King.h"
+#include "Knight.h"
+#include "Rook.h"
+#include "Queen.h"
+#include "Empty.h"
+#include "cmath"
 
 King::King(int row, int col, Color color): Piece(row, col, color) {}
 
-constexpr bool King::canMove(int new_row, int new_col, const Board& board) const {
+bool King::canMove(int new_row, int new_col, const Board& board) const {
     int difRow = new_row - _row;
     int difCol = new_col - _col;
     if (std::abs(difRow) > 1 || (difRow == 0 && difCol == 0))
@@ -21,23 +29,20 @@ constexpr bool King::canMove(int new_row, int new_col, const Board& board) const
     if (std::abs(difCol) == 2 && !_isMoved && !board.cellUnderAttack(_row, _col, _color)) {
         if (difCol > 0 && !board.isOccupied(_row, _col+1) && !board.isOccupied(_row, _col+2)) {
             auto& isRook = board.getPiece(_row, _col+3);
-            if (std::holds_alternative<Rook>(isRook)) {
-                if (!isRook.isMoved()
-                    && !board.cellUnderAttack(_row, _col+1, _color)
-                    && !board.cellUnderAttack(_row, _col+2, _color)
-                    )
+            if (auto* rook = std::get_if<Rook>(&isRook)) {
+                if (!rook->isMoved() &&
+                    !board.cellUnderAttack(_row, _col + 1, _color) &&
+                    !board.cellUnderAttack(_row, _col + 2, _color))
                     return true;
             }
         }
         if (difCol < 0 && !board.isOccupied(_row, _col-1) && !board.isOccupied(_row, _col-2)) {
             auto& isRook = board.getPiece(_row, _col-4);
-            if (std::holds_alternative<Rook>(isRook)) {
-                if (!isRook.isMoved()
-                    && !board.cellUnderAttack(_row, _col-1, _color)
-                    && !board.cellUnderAttack(_row, _col-2, _color)
-                    && !board.cellUnderAttack(_row, _col-3, _color)
-                    )
-                return true;
+            if (auto* rook = std::get_if<Rook>(&isRook)) {
+                if (!rook->isMoved() &&
+                !board.cellUnderAttack(_row, _col + 1, _color) &&
+                !board.cellUnderAttack(_row, _col + 2, _color))
+                    return true;
             }
         }
     }

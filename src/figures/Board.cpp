@@ -3,31 +3,14 @@
 Board::Board(): data(8, std::vector<PieceVariant>(8, Empty())) {
 }
 
-constexpr bool Board::isOccupied(int row, int col) const {
+bool Board::isOccupied(int row, int col) const {
     return !std::holds_alternative<Empty>(data[row][col]);
 }
 
 const PieceVariant& Board::getPiece(int row, int col) const {
     return data[row][col];
 }
-
-// bool Board::cellUnderAttack(int row, int col, Color ColorOfMoved) const {
-//     for (int i = 0; i < 8; ++i) {
-//         for (int j = 0; j < 8; ++j) {
-//             auto& enemy = getPiece(i, j);
-//             if (std::holds_alternative<Empty>(enemy))
-//                 continue;
-//             Color enemyColor = std::visit([](auto& el){ return el.getColor();}, enemy);
-//             if (enemyColor != ColorOfMoved) {
-//                 bool canAtack = std::visit([](auto& el){ return el.canMove(row, col, *this);}, enemy);
-//                 if (canAtack)
-//                     return true;
-//             }
-//         }
-//     }
-//     return false;
-// }
-constexpr bool Board::cellUnderAttack(int row, int col, Color ColorOfMoved) const {
+bool Board::cellUnderAttack(int row, int col, Color ColorOfMoved) const {
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
             auto& enemy = getPiece(i, j);
@@ -84,7 +67,14 @@ void Board::makeMove(const Move &move) {
         auto& pieceMoved = getPiece(move.getFromRow(), move.getFromCol());
         if (std::holds_alternative<Empty>(pieceMoved))
             return;
-        data[move.getToRow()][move.getToCol()] = pieceMoved;
-        data[move.getFromRow()][move.getFromCol()] = Empty();
+        if (std::holds_alternative<King>(pieceMoved)) {
+            if (std::abs(move.getFromRow() - move.getToRow()) == 2) {
+
+            }
+        }
     }
+}
+
+void Board::setPiece(int row, int col, const PieceVariant& piece) {
+    data[row][col] = piece;
 }

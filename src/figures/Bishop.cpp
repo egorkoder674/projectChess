@@ -1,8 +1,16 @@
 #include "Bishop.h"
+#include "Board.h"
+#include "Pawn.h"
+#include "King.h"
+#include "Knight.h"
+#include "Rook.h"
+#include "Queen.h"
+#include "Empty.h"
+#include "cmath"
 
 Bishop::Bishop(int row, int col, Color color): Piece(row, col, color) {}
 
-constexpr bool Bishop::canMove(int new_row, int new_col, const Board& board) const {
+bool Bishop::canMove(int new_row, int new_col, const Board& board) const {
     int difRow = new_row - _row;
     int difCol = new_col - _col;
     if (std::abs(difCol) != std::abs(difRow) || (difRow == 0 && difCol == 0))
@@ -26,5 +34,3 @@ constexpr bool Bishop::canMove(int new_row, int new_col, const Board& board) con
     Color enemyColor = std::visit([](auto& el){return el.getColor();}, enemy);
     return getColor() != enemyColor;
 }
-
-

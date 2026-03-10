@@ -1,9 +1,17 @@
+#include "Bishop.h"
+#include "Board.h"
+#include "Pawn.h"
+#include "King.h"
+#include "Knight.h"
 #include "Rook.h"
+#include "Queen.h"
+#include "Empty.h"
+#include "cmath"
 
 Rook::Rook(int row, int col, Color color): Piece(row, col, color) {}
 
 
-constexpr bool Rook::canMove(int new_row, int new_col, const Board& board) const {
+bool Rook::canMove(int new_row, int new_col, const Board& board) const {
     int difRow = new_row - _row;
     int difCol = new_col - _col;
     if ((difRow != 0 && difCol != 0) || (difRow == 0 && difCol == 0))

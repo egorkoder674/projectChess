@@ -8,9 +8,9 @@ class Move {
     int _toCol;
 public:
     Move(int fromRow, int fromCol, int toRow, int toCol);
-    constexpr int getFromRow() const;
-    constexpr int getFromCol() const;
-    constexpr int getToRow() const;
-    constexpr int getToCol() const;
+    int getFromRow() const;
+    int getFromCol() const;
+    int getToRow() const;
+    int getToCol() const;
 };
 #endif //PROJECT_MOVE_H

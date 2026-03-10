@@ -1,8 +1,16 @@
+#include "Bishop.h"
+#include "Board.h"
+#include "Pawn.h"
+#include "King.h"
 #include "Knight.h"
+#include "Rook.h"
+#include "Queen.h"
+#include "Empty.h"
+#include "cmath"
 
 Knight::Knight(int row, int col, Color color): Piece(row, col, color) {}
 
-constexpr bool Knight::canMove(int new_row, int new_col, const Board& board) const {
+bool Knight::canMove(int new_row, int new_col, const Board& board) const {
     if (new_row == _row && new_col == _col)
         return false;
     int difRow = std::abs(new_row - _row);

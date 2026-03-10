@@ -1,12 +1,17 @@
+#include "Bishop.h"
+#include "Board.h"
 #include "Pawn.h"
+#include "King.h"
+#include "Knight.h"
+#include "Rook.h"
+#include "Queen.h"
+#include "Empty.h"
+#include "cmath"
 
 Pawn::Pawn(int row, int col, Color color): Piece(row, col, color) {}
 
-constexpr bool Pawn::isMoved() const {
-    return _isMoved;
-}
 
-constexpr bool Pawn::canMove(int new_row, int new_col, const Board &board) const {
+bool Pawn::canMove(int new_row, int new_col, const Board &board) const {
     int difRow = new_row - _row;
     int difCol = new_col - _col;
 

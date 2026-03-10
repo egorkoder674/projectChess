@@ -69,3 +69,18 @@ void GameWindow::handleClick(int x, int y) {
     }
 }
 
+void GameWindow::handleEvents() {
+    while (auto optEvent = window.pollEvent()) {
+        const sf::Event& event = *optEvent;
+
+        if (event.is<sf::Event::Closed>()) {
+            window.close();
+        }
+        else if (auto* mousePressed = event.getIf<sf::Event::MouseButtonPressed>()) {
+            if (mousePressed->button == sf::Mouse::Button::Left) {
+                handleClick(mousePressed->position.x, mousePressed->position.y);
+            }
+        }
+    }
+}
+

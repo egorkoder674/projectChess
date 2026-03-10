@@ -19,6 +19,8 @@ private:
     }
 public:
     GameWindow();
+
+    bool setup();
 };
 
 

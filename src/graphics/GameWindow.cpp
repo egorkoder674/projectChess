@@ -33,3 +33,39 @@ bool GameWindow::setup() {
 
 }
 
+
+void GameWindow::handleClick(int x, int y) {
+    int screenRow = y / renderer.getCellSize();
+    int screenCol = x / renderer.getCellSize();
+    if (screenRow < 0 || screenRow >= 8 || screenCol < 0 || screenCol >= 8) return;
+
+    int internalRow = 7 - screenRow;
+    int internalCol = screenCol;
+
+    if (!selectedRow.has_value()) {
+        if (!boardState[internalRow][internalCol].empty()) {
+            selectedRow = internalRow;
+            selectedCol = internalCol;
+            std::cout << "The figure was chosen from " << colToLetter(internalCol)
+                          << (internalRow + 1) << "\n";
+        }
+    }
+    else {
+        if (*selectedRow == internalRow && *selectedCol == internalCol) {
+            selectedRow.reset();
+            selectedCol.reset();
+            return;
+        }
+        lastMove = SimpleMove{*selectedRow, *selectedCol, internalRow, internalCol};
+        std::cout << "Move from " << colToLetter(*selectedCol) << (*selectedRow + 1) << " to "
+        << colToLetter(internalCol) << (internalRow + 1) << "\n";
+
+        boardState[internalRow][internalCol] = boardState[*selectedRow][*selectedCol];
+        boardState[*selectedRow][*selectedCol] = "";
+        renderer.updateBoard(boardState);
+
+        selectedRow.reset();
+        selectedCol.reset();
+    }
+}
+

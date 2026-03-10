@@ -21,6 +21,7 @@ public:
     GameWindow();
 
     bool setup();
+    void handleClick(int x, int y);
 };
 
 

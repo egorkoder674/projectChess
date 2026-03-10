@@ -9,14 +9,16 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(
-        test
-        test1.cpp
+add_executable(all_tests
+        BishopTest.cpp
+        RookTest.cpp
+
 )
+target_include_directories(all_tests PUBLIC ${CMAKE_SOURCE_DIR}/include/figures)
 target_link_libraries(
-        test
-        GTest::gtest_main
+        all_tests
+        PRIVATE figures GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(test)
+gtest_discover_tests(all_tests)

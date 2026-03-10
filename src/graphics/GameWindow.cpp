@@ -84,3 +84,19 @@ void GameWindow::handleEvents() {
     }
 }
 
+void GameWindow::draw() {
+    window.clear();
+    renderer.draw(window);
+    if (selectedRow.has_value()) {
+        renderer.drawHighlight(window, *selectedRow, *selectedCol, sf::Color(255, 255, 0, 128));
+    }
+    window.display();
+}
+
+bool GameWindow::processFrame() {
+    handleEvents();
+    draw();
+    return window.isOpen();
+}
+
+

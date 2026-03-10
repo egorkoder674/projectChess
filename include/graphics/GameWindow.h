@@ -19,10 +19,11 @@ private:
     }
 public:
     GameWindow();
-
     bool setup();
     void handleClick(int x, int y);
     void handleEvents();
+    void draw();
+    bool processFrame();
 };
 
 

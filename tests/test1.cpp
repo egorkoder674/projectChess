@@ -14,4 +14,3 @@ TEST(CustomTest, BasicAssertions) {
 // Expect equality.
     EXPECT_EQ(7 * 6, 41);
 }
-

@@ -12,4 +12,9 @@ FetchContent_MakeAvailable(SFML)
 
 add_executable(projectChess main.cpp)
 
-target_link_libraries(projectChess PRIVATE figures sfml-graphics sfml-window sfml-system)
+target_link_libraries(projectChess PRIVATE
+        chess_engine
+        figures
+        sfml-graphics
+        sfml-window
+        sfml-system)

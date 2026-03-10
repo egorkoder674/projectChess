@@ -18,6 +18,11 @@ public:
     int getCellSize() const;
 };
 
+struct SimpleMove {
+    int fromRow, fromCol;
+    int toRow, toCol;
+};
+
 
 
 #endif //PROJECT_BOARDRENDERER_H

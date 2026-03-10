@@ -1,8 +1,28 @@
-//
-// Created by admin on 08.03.2026.
-//
-
 #ifndef PROJECT_GAMEWINDOW_H
 #define PROJECT_GAMEWINDOW_H
+
+#include "TextureStorage.h"
+#include "BoardRenderer.h"
+#include <vector>
+class GameWindow {
+private:
+    sf::RenderWindow window;
+    TextureStorage textures;
+    BoardRenderer renderer;
+    std::optional<int> selectedRow;
+    std::optional<int> selectedCol;
+    std::optional<SimpleMove> lastMove;
+    std::vector<std::vector<std::string>> boardState;
+
+    std::string colToLetter(int col) const {
+        return std::string(1, 'a' + col);
+    }
+public:
+    GameWindow();
+};
+
+
+
+
 
 #endif //PROJECT_GAMEWINDOW_H

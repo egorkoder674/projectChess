@@ -2,20 +2,18 @@
 
 Piece::Piece(int row, int col, Color color): _row(row), _col(col), _color(color){}
 
-constexpr int Piece::getRow() const {
+int Piece::getRow() const {
     return _row;
 }
 
-constexpr int Piece::getCol() const {
+int Piece::getCol() const {
     return _col;
 }
 
-constexpr Color Piece::getColor() const {
+Color Piece::getColor() const {
     return _color;
 }
 
-constexpr bool Piece::isMoved() const {
+bool Piece::isMoved() const {
     return _isMoved;
 }
-
-

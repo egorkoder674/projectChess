@@ -6,19 +6,19 @@ _fromCol(fromCol),
 _toRow(toRow),
 _toCol(toCol){}
 
-constexpr int Move::getFromRow() const {
+int Move::getFromRow() const {
     return _fromRow;
 }
 
-constexpr int Move::getFromCol() const {
+int Move::getFromCol() const {
     return _fromCol;
 }
 
-constexpr int Move::getToRow() const {
+int Move::getToRow() const {
     return _toRow;
 }
 
-constexpr int Move::getToCol() const {
+int Move::getToCol() const {
     return _toCol;
 }
 

@@ -1,5 +1,6 @@
 add_library(figures)
 target_sources(figures PRIVATE
+        ${CMAKE_SOURCE_DIR}/src/figures/Piece.cpp
         ${CMAKE_SOURCE_DIR}/src/figures/Bishop.cpp
         ${CMAKE_SOURCE_DIR}/src/figures/Pawn.cpp
         ${CMAKE_SOURCE_DIR}/src/figures/King.cpp

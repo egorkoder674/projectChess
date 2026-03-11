@@ -4,6 +4,7 @@
 TEST(QueenTest, SimpleMove) {
     Board board;
     Queen whiteQueen(3, 3, Color::White);
+    board.setPiece(3, 3, whiteQueen);
 
     EXPECT_TRUE(whiteQueen.canMove(0,0, board));
     EXPECT_TRUE(whiteQueen.canMove(2,4, board));

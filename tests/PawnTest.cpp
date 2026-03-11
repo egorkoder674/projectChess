@@ -38,7 +38,7 @@ TEST(PawnTest, MoveFromStartPosition) {
     EXPECT_FALSE(whitePawn.canMove(3,1,board));
 }
 
-TEST(Pawn, JumpFromStartPosition) {
+TEST(PawnTest, JumpFromStartPosition) {
     Board board;
     Pawn blackPawn(1,0, Color::Black);
     board.setPiece(1,0, blackPawn);

@@ -13,7 +13,7 @@ King::King(int row, int col, Color color): Piece(row, col, color) {}
 bool King::canMove(int new_row, int new_col, const Board& board) const {
     int difRow = new_row - _row;
     int difCol = new_col - _col;
-    if (std::abs(difRow) > 1 || (difRow == 0 && difCol == 0))
+    if (difRow == 0 && 0 == difCol)
         return false;
     //просто ход
     if (std::abs(difRow) <= 1 && std::abs(difCol) <= 1) {
@@ -36,12 +36,14 @@ bool King::canMove(int new_row, int new_col, const Board& board) const {
                     return true;
             }
         }
-        if (difCol < 0 && !board.isOccupied(_row, _col-1) && !board.isOccupied(_row, _col-2)) {
+        if (difCol < 0 && !board.isOccupied(_row, _col-1) && !board.isOccupied(_row, _col-2)
+            && !board.isOccupied(_row, _col-3)) {
             auto& isRook = board.getPiece(_row, _col-4);
             if (auto* rook = std::get_if<Rook>(&isRook)) {
                 if (!rook->isMoved() &&
-                !board.cellUnderAttack(_row, _col + 1, _color) &&
-                !board.cellUnderAttack(_row, _col + 2, _color))
+                !board.cellUnderAttack(_row, _col - 1, _color) &&
+                !board.cellUnderAttack(_row, _col - 2, _color) &&
+                !board.cellUnderAttack(_row, _col - 3, _color))
                     return true;
             }
         }

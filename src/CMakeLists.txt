@@ -1,3 +1,15 @@
+include(FetchContent)
+
+# Объявление зависимости
+FetchContent_Declare(
+        SFML
+        GIT_REPOSITORY https://github.com/SFML/SFML.git
+        GIT_TAG        3.0.2 # Можно указать конкретный тег или хэш коммита
+)
+
+# Загрузка и подключение
+FetchContent_MakeAvailable(SFML)
+
 add_library(figures)
 target_sources(figures PRIVATE
         ${CMAKE_SOURCE_DIR}/src/figures/Piece.cpp
@@ -18,3 +30,5 @@ target_sources(graphics PRIVATE ${CMAKE_SOURCE_DIR}/src/graphics/BoardRenderer.c
         ${CMAKE_SOURCE_DIR}/src/graphics/TextureStorage.cpp)
 
 target_include_directories(graphics PUBLIC ${CMAKE_SOURCE_DIR}/include/graphics)
+
+target_link_libraries(graphics PUBLIC SFML::Graphics)

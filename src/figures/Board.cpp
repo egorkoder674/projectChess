@@ -1,6 +1,7 @@
 #include "Board.h"
 
 Board::Board(): data(8, std::vector<PieceVariant>(8, Empty())) {
+    setupInitialPosition();
 }
 
 bool Board::isOccupied(int row, int col) const {
@@ -44,6 +45,9 @@ bool Board::cellUnderAttack(int row, int col, Color ColorOfMoved) const {
 
 
 bool Board::isLegalMove(const Move &move) {
+    if (!isInside(move.getFromRow(), move.getFromCol()) ||
+        !isInside(move.getToRow(), move.getToCol()))
+        return false;
     auto& pieceMoved = getPiece(move.getFromRow(), move.getFromCol());
     if (auto* bishop = std::get_if<Bishop>(&pieceMoved)) {
         return bishop->canMove(move.getToRow(), move.getToCol(), *this);
@@ -76,6 +80,12 @@ void Board::makeMove(const Move &move) {
     PieceVariant piece = data[fromRow][fromCol];
     data[fromRow][fromCol] = Empty();
     data[toRow][toCol] = piece;
+    std::visit([&](auto& el) {
+        using T = std::decay_t<decltype(el)>;
+        if constexpr (!std::is_same_v<T, Empty>) {
+            el = T(toRow, toCol, el.getColor());
+        }
+    }, data[toRow][toCol]);
 }
 
 void Board::setPiece(int row, int col, const PieceVariant& piece) {
@@ -84,4 +94,27 @@ void Board::setPiece(int row, int col, const PieceVariant& piece) {
 
 bool Board::isInside(int row, int col) const {
     return row >= 0 && row < 8 && col >= 0 && col < 8;
+}
+
+void Board::setupInitialPosition() {
+    for (int col = 0; col < 8; col++) {
+        setPiece(1, col, Pawn(1, col, Color::White));
+        setPiece(6, col, Pawn(6, col, Color::Black));
+    }
+    setPiece(0,0, Rook(0,0,Color::White));
+    setPiece(0,7, Rook(0,7,Color::White));
+    setPiece(7,0, Rook(7,0,Color::Black));
+    setPiece(7,7, Rook(7,7,Color::Black));
+    setPiece(0,1, Knight(0,1,Color::White));
+    setPiece(0,6, Knight(0,6,Color::White));
+    setPiece(7,1, Knight(7,1,Color::Black));
+    setPiece(7,6, Knight(7,6,Color::Black));
+    setPiece(0,2, Bishop(0,2,Color::White));
+    setPiece(0,5, Bishop(0,5,Color::White));
+    setPiece(7,2, Bishop(7,2,Color::Black));
+    setPiece(7,5, Bishop(7,5,Color::Black));
+    setPiece(0,3, Queen(0,3,Color::White));
+    setPiece(7,3, Queen(7,3,Color::Black));
+    setPiece(0,4, King(0,4,Color::White));
+    setPiece(7,4, King(7,4,Color::Black));
 }

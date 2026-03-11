@@ -110,6 +110,30 @@ bool Board::isLegalMove(const Move &move) {
     return false;
 }
 
+std::vector<Move> Board::getLegalMoves(Color color) {
+    std::vector<Move> moves;
+    for (int fromRow = 0; fromRow < 8; ++fromRow) {
+        for (int fromCol = 0; fromCol < 8; ++fromCol) {
+            auto& piece = getPiece(fromRow, fromCol);
+            if (std::holds_alternative<Empty>(piece))
+                continue;
+            Color pieceColor = std::visit([](auto& el) {
+                return el.getColor();
+            }, piece);
+            if (pieceColor != color)
+                continue;
+            for (int toRow = 0; toRow < 8; ++toRow) {
+                for (int toCol = 0; toCol < 8; ++toCol) {
+                    Move move(fromRow, fromCol, toRow, toCol);
+                    if (isLegalMove(move))
+                        moves.push_back(move);
+                }
+            }
+        }
+    }
+    return moves;
+}
+
 void Board::makeMove(const Move &move) {
     if (!isLegalMove(move))
         return;

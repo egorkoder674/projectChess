@@ -48,7 +48,22 @@ bool Board::isLegalMove(const Move &move) {
     if (!isInside(move.getFromRow(), move.getFromCol()) ||
         !isInside(move.getToRow(), move.getToCol()))
         return false;
+
     auto& pieceMoved = getPiece(move.getFromRow(), move.getFromCol());
+
+    Color movingColor = std::visit([](auto& el) { return el.getColor(); }, pieceMoved);
+    if (movingColor != currentPlayer)
+        return false;
+
+    if (!std::holds_alternative<Empty>(data[move.getToRow()][move.getToCol()])) {
+
+        Color movingColor = std::visit([](auto& el) { return el.getColor(); }, pieceMoved);
+        Color targetColor = std::visit([](auto& el) { return el.getColor(); }, data[move.getToRow()][move.getToCol()]);
+
+        if (movingColor == targetColor)
+            return false;
+    }
+
     if (auto* bishop = std::get_if<Bishop>(&pieceMoved)) {
         return bishop->canMove(move.getToRow(), move.getToCol(), *this);
     }
@@ -67,6 +82,31 @@ bool Board::isLegalMove(const Move &move) {
     else if (auto* pawn = std::get_if<Pawn>(&pieceMoved)) {
         return pawn->canMove(move.getToRow(), move.getToCol(), *this);
     }
+
+    Board tempBoard = *this;
+    tempBoard.makeMove(move);
+    int kingRow = -1;
+    int kingCol = -1;
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+
+            auto& piece = tempBoard.getPiece(i, j);
+
+            if (std::holds_alternative<King>(piece)) {
+
+                Color kingColor = std::get<King>(piece).getColor();
+
+                if (kingColor == movingColor) {
+                    kingRow = i;
+                    kingCol = j;
+                }
+            }
+        }
+    }
+
+    if (tempBoard.cellUnderAttack(kingRow, kingCol, movingColor))
+        return false;
+
     return false;
 }
 
@@ -77,7 +117,11 @@ void Board::makeMove(const Move &move) {
     int fromCol = move.getFromCol();
     int toRow = move.getToRow();
     int toCol = move.getToCol();
+
     PieceVariant piece = data[fromRow][fromCol];
+
+    currentPlayer = (currentPlayer == Color::White) ? Color::Black : Color::White;
+
     data[fromRow][fromCol] = Empty();
     data[toRow][toCol] = piece;
     std::visit([&](auto& el) {

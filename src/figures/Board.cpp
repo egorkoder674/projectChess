@@ -66,20 +66,22 @@ bool Board::isLegalMove(const Move &move) {
     return false;
 }
 
-
 void Board::makeMove(const Move &move) {
-    if (isLegalMove(move)) {
-        auto& pieceMoved = getPiece(move.getFromRow(), move.getFromCol());
-        if (std::holds_alternative<Empty>(pieceMoved))
-            return;
-        if (std::holds_alternative<King>(pieceMoved)) {
-            if (std::abs(move.getFromRow() - move.getToRow()) == 2) {
-
-            }
-        }
-    }
+    if (!isLegalMove(move))
+        return;
+    int fromRow = move.getFromRow();
+    int fromCol = move.getFromCol();
+    int toRow = move.getToRow();
+    int toCol = move.getToCol();
+    PieceVariant piece = data[fromRow][fromCol];
+    data[fromRow][fromCol] = Empty();
+    data[toRow][toCol] = piece;
 }
 
 void Board::setPiece(int row, int col, const PieceVariant& piece) {
     data[row][col] = piece;
+}
+
+bool Board::isInside(int row, int col) const {
+    return row >= 0 && row < 8 && col >= 0 && col < 8;
 }

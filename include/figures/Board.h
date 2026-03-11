@@ -32,4 +32,5 @@ public:
     void setPiece(int row, int col, const PieceVariant& piece);
     void makeMove(const Move& move);
     bool isLegalMove(const Move& move);
+    bool isInside(int row, int col) const;
 };

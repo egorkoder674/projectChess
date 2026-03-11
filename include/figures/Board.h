@@ -34,4 +34,5 @@ public:
     bool isLegalMove(const Move& move);
     bool isInside(int row, int col) const;
     void setupInitialPosition();
+    Color currentPlayer = Color::White;
 };

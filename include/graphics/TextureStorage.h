@@ -6,7 +6,6 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <optional>
-#include <iostream>
 
 class TextureStorage {
 private:
@@ -15,8 +14,4 @@ public:
     bool load(const std::string& name, const std::string& filename);
     std::optional<sf::Sprite> getSprite(const std::string& name) const;
 };
-
-
-
-
 #endif //PROJECT_TEXTURESTORAGE_H

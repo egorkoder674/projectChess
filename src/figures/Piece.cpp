@@ -6,8 +6,16 @@ int Piece::getRow() const {
     return _row;
 }
 
+void Piece::setRow(int r) {
+    _row = r;
+}
+
 int Piece::getCol() const {
     return _col;
+}
+
+void Piece::setCol(int c) {
+    _col = c;
 }
 
 Color Piece::getColor() const {
@@ -16,4 +24,8 @@ Color Piece::getColor() const {
 
 bool Piece::isMoved() const {
     return _isMoved;
+}
+
+void Piece::setMoved(bool m) {
+    _isMoved = m;
 }

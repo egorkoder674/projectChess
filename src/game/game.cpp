@@ -6,8 +6,7 @@ Game::Game() : board(), boardView(8, std::vector<std::string>(8, "")) {
     rebuildBoardView();
 }
 
-void Game::click(int row, int col)
-{
+void Game::click(int row, int col) {
     if (!selectedRow.has_value()) {
         if (board.isOccupied(row, col)) {
             selectedRow = row;
@@ -29,8 +28,7 @@ void Game::click(int row, int col)
     selectedCol.reset();
 }
 
-void Game::rebuildBoardView()
-{
+void Game::rebuildBoardView() {
     for (auto& row : boardView)
         for (auto& cell : row)
             cell.clear();
@@ -47,32 +45,29 @@ void Game::rebuildBoardView()
     }
 }
 
-std::string Game::pieceToTexture(const PieceVariant& piece) const
-{
-    return std::visit([](auto&& p) -> std::string {
-
+std::string Game::pieceToTexture(const PieceVariant& piece) const {
+    return std::visit([](auto& p) -> std::string {
         using T = std::decay_t<decltype(p)>;
-
-        if constexpr (std::is_same_v<T, Empty>)
+        if (std::is_same_v<T, Empty>)
             return "";
-
-        std::string prefix =
-            (p.getColor() == Color::White) ? "w_" : "b_";
-
-        if constexpr (std::is_same_v<T, Pawn>)   return prefix + "pawn";
-        if constexpr (std::is_same_v<T, Rook>)   return prefix + "rook";
-        if constexpr (std::is_same_v<T, Knight>) return prefix + "knight";
-        if constexpr (std::is_same_v<T, Bishop>) return prefix + "bishop";
-        if constexpr (std::is_same_v<T, Queen>)  return prefix + "queen";
-        if constexpr (std::is_same_v<T, King>)   return prefix + "king";
-
+        std::string color = (p.getColor() == Color::White) ? "w_" : "b_";
+        if (std::is_same_v<T, Pawn>)
+            return color + "pawn";
+        if (std::is_same_v<T, Rook>)
+            return color + "rook";
+        if (std::is_same_v<T, Knight>)
+            return color + "knight";
+        if (std::is_same_v<T, Bishop>)
+            return color + "bishop";
+        if (std::is_same_v<T, Queen>)
+            return color + "queen";
+        if (std::is_same_v<T, King>)
+            return color + "king";
         return "";
     }, piece);
 }
 
-const std::vector<std::vector<std::string>>&
-Game::getBoardView() const
-{
+const std::vector<std::vector<std::string>>& Game::getBoardView() const {
     return boardView;
 }
 

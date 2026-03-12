@@ -295,6 +295,5 @@ bool Board::isStalemate(Color color) const {
             }
         }
     }
-
     return true;
 }

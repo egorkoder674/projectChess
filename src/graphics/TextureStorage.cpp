@@ -1,6 +1,6 @@
 #include "TextureStorage.h"
 bool TextureStorage::load(const std::string &name, const std::string &filename) {
-    auto tex = std::make_unique<sf::Texture>();
+    std::unique_ptr<sf::Texture> tex = std::make_unique<sf::Texture>();
     if (!tex->loadFromFile(filename)) {
         std::cout << "Loading error " << filename << std::endl;
         return false;

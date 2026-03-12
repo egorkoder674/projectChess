@@ -78,6 +78,10 @@ void Board::makeMove(const Move &move) {
 
     Color pieceColor = std::visit([](auto& el) { return el.getColor(); }, piece);
 
+
+    if (pieceColor != currentPlayer)
+        return;
+
     // создаём временную доску
     Board tempBoard = *this;
 
@@ -142,6 +146,9 @@ void Board::makeMove(const Move &move) {
 
     setPiece(move.getToRow(), move.getToCol(), piece);
     setPiece(move.getFromRow(), move.getFromCol(), Empty());
+    currentPlayer = (currentPlayer == Color::White)
+                    ? Color::Black
+                    : Color::White;
 }
 
 void Board::setPiece(int row, int col, const PieceVariant& piece) {

@@ -1,6 +1,11 @@
 #include <GameWindow.h>
-GameWindow::GameWindow():window(sf::VideoMode({800, 800}), "Chess"), renderer(textures),
-boardState(8, std::vector<std::string>(8, "")) {};
+
+GameWindow::GameWindow()
+        : window(sf::VideoMode({800, 800}), "Chess"),
+          renderer(textures),
+          boardState(8, std::vector<std::string>(8, "")),
+          checkmateText(font)
+{}
 
 bool GameWindow::setup() {
     if (!textures.load("board", "Board.png"))
@@ -25,6 +30,16 @@ bool GameWindow::setup() {
         return false;
 
     renderer.setBoardSprite(*boardSpriteOpt);
+
+    if (!font.openFromFile("arialmt.ttf")) {
+        std::cout << "Failed to load font\n";
+    }
+
+    checkmateText.setFont(font);
+    checkmateText.setString("CHECKMATE!");
+    checkmateText.setCharacterSize(80);
+    checkmateText.setFillColor(sf::Color::Black);
+    checkmateText.setPosition(sf::Vector2f(180,350));
 
     boardState = game.getBoardView();
     renderer.updateBoard(boardState);
@@ -69,6 +84,9 @@ void GameWindow::handleEvents() {
 void GameWindow::draw() {
     window.clear();
     renderer.draw(window);
+    if (game.isGameOver()) {
+        window.draw(checkmateText);
+    }
     auto selected = game.getSelected();
 
     if (selected) {

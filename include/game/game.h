@@ -6,6 +6,7 @@
 
 class Game {
     Board board;
+    bool gameOver = false;
     std::optional<int> selectedRow;
     std::optional<int> selectedCol;
     std::vector<std::vector<std::string>> boardView;

@@ -7,6 +7,8 @@ Game::Game() : board(), boardView(8, std::vector<std::string>(8, "")) {
 }
 
 void Game::click(int row, int col) {
+    if (gameOver)
+        return;
     if (!selectedRow.has_value()) {
         if (board.isOccupied(row, col)) {
             selectedRow = row;
@@ -23,6 +25,22 @@ void Game::click(int row, int col) {
     if (board.isLegalMove(move)) {
         board.makeMove(move);
         rebuildBoardView();
+        // проверяем мат
+        for (int r = 0; r < 8; ++r) {
+            for (int c = 0; c < 8; ++c) {
+
+                const auto& piece = board.getPiece(r, c);
+
+                if (std::holds_alternative<King>(piece)) {
+
+                    Color kingColor = std::get<King>(piece).getColor();
+
+                    if (board.cellUnderAttack(r, c, kingColor)) {
+                        gameOver = true;
+                    }
+                }
+            }
+        }
     }
     selectedRow.reset();
     selectedCol.reset();

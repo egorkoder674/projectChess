@@ -1,7 +1,6 @@
 #include "Board.h"
 
 Board::Board(): data(8, std::vector<PieceVariant>(8, Empty())) {
-    setupInitialPosition();
 }
 
 bool Board::isOccupied(int row, int col) const {
@@ -45,25 +44,7 @@ bool Board::cellUnderAttack(int row, int col, Color ColorOfMoved) const {
 
 
 bool Board::isLegalMove(const Move &move) {
-    if (!isInside(move.getFromRow(), move.getFromCol()) ||
-        !isInside(move.getToRow(), move.getToCol()))
-        return false;
-
     auto& pieceMoved = getPiece(move.getFromRow(), move.getFromCol());
-
-    Color movingColor = std::visit([](auto& el) { return el.getColor(); }, pieceMoved);
-    if (movingColor != currentPlayer)
-        return false;
-
-    if (!std::holds_alternative<Empty>(data[move.getToRow()][move.getToCol()])) {
-
-        Color movingColor = std::visit([](auto& el) { return el.getColor(); }, pieceMoved);
-        Color targetColor = std::visit([](auto& el) { return el.getColor(); }, data[move.getToRow()][move.getToCol()]);
-
-        if (movingColor == targetColor)
-            return false;
-    }
-
     if (auto* bishop = std::get_if<Bishop>(&pieceMoved)) {
         return bishop->canMove(move.getToRow(), move.getToCol(), *this);
     }
@@ -82,86 +63,52 @@ bool Board::isLegalMove(const Move &move) {
     else if (auto* pawn = std::get_if<Pawn>(&pieceMoved)) {
         return pawn->canMove(move.getToRow(), move.getToCol(), *this);
     }
-
-    Board tempBoard = *this;
-    tempBoard.makeMove(move);
-    int kingRow = -1;
-    int kingCol = -1;
-    for (int i = 0; i < 8; ++i) {
-        for (int j = 0; j < 8; ++j) {
-
-            auto& piece = tempBoard.getPiece(i, j);
-
-            if (std::holds_alternative<King>(piece)) {
-
-                Color kingColor = std::get<King>(piece).getColor();
-
-                if (kingColor == movingColor) {
-                    kingRow = i;
-                    kingCol = j;
-                }
-            }
-        }
-    }
-
-    if (tempBoard.cellUnderAttack(kingRow, kingCol, movingColor))
-        return false;
-
     return false;
 }
 
-std::vector<Move> Board::getLegalMoves(Color color) {
-    std::vector<Move> moves;
-    for (int fromRow = 0; fromRow < 8; ++fromRow) {
-        for (int fromCol = 0; fromCol < 8; ++fromCol) {
-            auto& piece = getPiece(fromRow, fromCol);
-            if (std::holds_alternative<Empty>(piece))
-                continue;
-            Color pieceColor = std::visit([](auto& el) {
-                return el.getColor();
-            }, piece);
-            if (pieceColor != color)
-                continue;
-            for (int toRow = 0; toRow < 8; ++toRow) {
-                for (int toCol = 0; toCol < 8; ++toCol) {
-                    Move move(fromRow, fromCol, toRow, toCol);
-                    if (isLegalMove(move))
-                        moves.push_back(move);
-                }
-            }
-        }
-    }
-    return moves;
-}
 
 void Board::makeMove(const Move &move) {
     if (!isLegalMove(move))
         return;
-    int fromRow = move.getFromRow();
-    int fromCol = move.getFromCol();
-    int toRow = move.getToRow();
-    int toCol = move.getToCol();
+    PieceVariant piece = getPiece(move.getFromRow(), move.getFromCol());
 
-    PieceVariant piece = data[fromRow][fromCol];
+    if (std::holds_alternative<Empty>(piece))
+        return;
+    if (auto* king = std::get_if<King>(&piece)) {
+        int difCol = move.getToCol() - move.getFromCol();
+        if (std::abs(difCol) == 2) {
+            int r = move.getFromRow();
+            int oldRookCol = (difCol > 0) ? 7 : 0;
+            int newRookCol = (difCol > 0) ? 5 : 3;
 
-    currentPlayer = (currentPlayer == Color::White) ? Color::Black : Color::White;
-
-    data[fromRow][fromCol] = Empty();
-    data[toRow][toCol] = piece;
-    std::visit([&](auto& el) {
-        using T = std::decay_t<decltype(el)>;
-        if constexpr (!std::is_same_v<T, Empty>) {
-            el = T(toRow, toCol, el.getColor());
+            PieceVariant rook = getPiece(r, oldRookCol);
+            std::visit([&](auto& rk) {
+                using T = std::decay_t<decltype(rk)>;
+                if constexpr (!std::is_same_v<T, Empty>) {
+                    rk.setRow(r);
+                    rk.setCol(newRookCol);
+                    rk.setMoved(true);
+                }
+            }, rook);
+            setPiece(r, newRookCol, rook);
+            setPiece(r, oldRookCol, Empty());
         }
-    }, data[toRow][toCol]);
+    }
+    std::visit([&](auto& p) {
+        using T = std::decay_t<decltype(p)>;
+        if constexpr (!std::is_same_v<T, Empty>) {
+            p.setRow(move.getToRow());
+            p.setCol(move.getToCol());
+            p.setMoved(true);
+        }
+    }, piece);
+
+    setPiece(move.getToRow(), move.getToCol(), piece);
+    setPiece(move.getFromRow(), move.getFromCol(), Empty());
 }
 
 void Board::setPiece(int row, int col, const PieceVariant& piece) {
     data[row][col] = piece;
-}
-
-bool Board::isInside(int row, int col) const {
-    return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
 
 void Board::setupInitialPosition() {

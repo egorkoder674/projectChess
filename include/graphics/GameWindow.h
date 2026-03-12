@@ -4,13 +4,14 @@
 #include "TextureStorage.h"
 #include "BoardRenderer.h"
 #include <vector>
+#include "game.h"
+
 class GameWindow {
 private:
     sf::RenderWindow window;
     TextureStorage textures;
     BoardRenderer renderer;
-    std::optional<int> selectedRow;
-    std::optional<int> selectedCol;
+    Game game;
     std::optional<SimpleMove> lastMove;
     std::vector<std::vector<std::string>> boardState;
 
@@ -25,9 +26,4 @@ public:
     void draw();
     bool processFrame();
 };
-
-
-
-
-
 #endif //PROJECT_GAMEWINDOW_H

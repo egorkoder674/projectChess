@@ -29,11 +29,8 @@ public:
     bool isOccupied(int row, int col) const;
     const PieceVariant& getPiece(int row, int col) const;
     bool cellUnderAttack(int row, int col, Color ColorOfMoved) const;
-    std::vector<Move> getLegalMoves(Color color);
     void setPiece(int row, int col, const PieceVariant& piece);
     void makeMove(const Move& move);
     bool isLegalMove(const Move& move);
-    bool isInside(int row, int col) const;
     void setupInitialPosition();
-    Color currentPlayer = Color::White;
 };

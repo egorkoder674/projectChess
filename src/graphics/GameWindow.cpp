@@ -21,52 +21,34 @@ bool GameWindow::setup() {
     textures.load("b_king",   "B_King.png");
 
     auto boardSpriteOpt = textures.getSprite("board");
-    if (boardSpriteOpt.has_value()) {
-        renderer.setBoardSprite(boardSpriteOpt.value());
-    }
-    else {
-        std::cout << "Error with getting sprite\n";
+    if (!boardSpriteOpt)
         return false;
-    }
+
+    renderer.setBoardSprite(*boardSpriteOpt);
+
+    boardState = game.getBoardView();
+    renderer.updateBoard(boardState);
 
     return true;
-
 }
 
 
-void GameWindow::handleClick(int x, int y) {
+void GameWindow::handleClick(int x, int y)
+{
     int screenRow = y / renderer.getCellSize();
     int screenCol = x / renderer.getCellSize();
-    if (screenRow < 0 || screenRow >= 8 || screenCol < 0 || screenCol >= 8) return;
+
+    if (screenRow < 0 || screenRow >= 8 ||
+        screenCol < 0 || screenCol >= 8)
+        return;
 
     int internalRow = 7 - screenRow;
     int internalCol = screenCol;
 
-    if (!selectedRow.has_value()) {
-        if (!boardState[internalRow][internalCol].empty()) {
-            selectedRow = internalRow;
-            selectedCol = internalCol;
-            std::cout << "The figure was chosen from " << colToLetter(internalCol)
-                          << (internalRow + 1) << "\n";
-        }
-    }
-    else {
-        if (*selectedRow == internalRow && *selectedCol == internalCol) {
-            selectedRow.reset();
-            selectedCol.reset();
-            return;
-        }
-        lastMove = SimpleMove{*selectedRow, *selectedCol, internalRow, internalCol};
-        std::cout << "Move from " << colToLetter(*selectedCol) << (*selectedRow + 1) << " to "
-        << colToLetter(internalCol) << (internalRow + 1) << "\n";
+    game.click(internalRow, internalCol);
 
-        boardState[internalRow][internalCol] = boardState[*selectedRow][*selectedCol];
-        boardState[*selectedRow][*selectedCol] = "";
-        renderer.updateBoard(boardState);
-
-        selectedRow.reset();
-        selectedCol.reset();
-    }
+    boardState = game.getBoardView();
+    renderer.updateBoard(boardState);
 }
 
 void GameWindow::handleEvents() {
@@ -87,8 +69,15 @@ void GameWindow::handleEvents() {
 void GameWindow::draw() {
     window.clear();
     renderer.draw(window);
-    if (selectedRow.has_value()) {
-        renderer.drawHighlight(window, *selectedRow, *selectedCol, sf::Color(255, 255, 0, 128));
+    auto selected = game.getSelected();
+
+    if (selected) {
+        renderer.drawHighlight(
+            window,
+            selected->first,
+            selected->second,
+            sf::Color(255,255,0,128)
+        );
     }
     window.display();
 }

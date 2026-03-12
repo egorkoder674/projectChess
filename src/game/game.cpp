@@ -35,7 +35,7 @@ void Game::click(int row, int col) {
 
                     Color kingColor = std::get<King>(piece).getColor();
 
-                    if (board.cellUnderAttack(r, c, kingColor)) {
+                    if (board.isCheckmate(kingColor)) {
                         gameOver = true;
                     }
                 }

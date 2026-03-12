@@ -24,8 +24,10 @@ using PieceVariant = std::variant<Empty, Bishop, King, Knight, Pawn, Queen, Rook
 
 class Board {
     std::vector<std::vector<PieceVariant>> data;
+    Color currentPlayer = Color::White;
 public:
     Board();
+    bool isCheckmate(Color color);
     bool isOccupied(int row, int col) const;
     const PieceVariant& getPiece(int row, int col) const;
     bool cellUnderAttack(int row, int col, Color ColorOfMoved) const;

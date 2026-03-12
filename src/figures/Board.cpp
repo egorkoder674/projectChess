@@ -70,10 +70,45 @@ bool Board::isLegalMove(const Move &move) {
 void Board::makeMove(const Move &move) {
     if (!isLegalMove(move))
         return;
+
     PieceVariant piece = getPiece(move.getFromRow(), move.getFromCol());
 
     if (std::holds_alternative<Empty>(piece))
         return;
+
+    Color pieceColor = std::visit([](auto& el) { return el.getColor(); }, piece);
+
+    // создаём временную доску
+    Board tempBoard = *this;
+
+    // делаем ход на временной доске
+    tempBoard.setPiece(move.getToRow(), move.getToCol(), piece);
+    tempBoard.setPiece(move.getFromRow(), move.getFromCol(), Empty());
+
+    // ищем короля
+    int kingRow = -1;
+    int kingCol = -1;
+
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            auto& p = tempBoard.getPiece(i, j);
+
+            if (std::holds_alternative<King>(p)) {
+                Color c = std::get<King>(p).getColor();
+
+                if (c == pieceColor) {
+                    kingRow = i;
+                    kingCol = j;
+                }
+            }
+        }
+    }
+
+    // если после хода король под шахом — запрещаем ход
+    if (tempBoard.cellUnderAttack(kingRow, kingCol, pieceColor))
+        return;
+
+    // рокировка
     if (auto* king = std::get_if<King>(&piece)) {
         int difCol = move.getToCol() - move.getFromCol();
         if (std::abs(difCol) == 2) {
@@ -94,6 +129,8 @@ void Board::makeMove(const Move &move) {
             setPiece(r, oldRookCol, Empty());
         }
     }
+
+    // обновляем координаты фигуры
     std::visit([&](auto& p) {
         using T = std::decay_t<decltype(p)>;
         if constexpr (!std::is_same_v<T, Empty>) {
@@ -132,4 +169,69 @@ void Board::setupInitialPosition() {
     setPiece(7,3, Queen(7,3,Color::Black));
     setPiece(0,4, King(0,4,Color::White));
     setPiece(7,4, King(7,4,Color::Black));
+}
+
+bool Board::isCheckmate(Color color) {
+
+    int kingRow = -1;
+    int kingCol = -1;
+
+    // ищем короля
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+
+            const auto& piece = getPiece(i, j);
+
+            if (std::holds_alternative<King>(piece)) {
+
+                const King& king = std::get<King>(piece);
+
+                if (king.getColor() == color) {
+                    kingRow = i;
+                    kingCol = j;
+                }
+            }
+        }
+    }
+
+    // если шаха нет — это не мат
+    if (!cellUnderAttack(kingRow, kingCol, color))
+        return false;
+
+    // проверяем все возможные ходы
+    for (int r1 = 0; r1 < 8; ++r1) {
+        for (int c1 = 0; c1 < 8; ++c1) {
+            const auto& piece = getPiece(r1, c1);
+            if (std::holds_alternative<Empty>(piece))
+                continue;
+            Color pieceColor = std::visit([](auto& el){ return el.getColor(); }, piece);
+            if (pieceColor != color)
+                continue;
+            for (int r2 = 0; r2 < 8; ++r2) {
+                for (int c2 = 0; c2 < 8; ++c2) {
+                    Move move(r1, c1, r2, c2);
+                    if (!isLegalMove(move))
+                        continue;
+                    Board temp = *this;
+                    temp.makeMove(move);
+                    int kr = -1, kc = -1;
+                    for (int i = 0; i < 8; ++i) {
+                        for (int j = 0; j < 8; ++j) {
+                            const auto& p = temp.getPiece(i, j);
+                            if (std::holds_alternative<King>(p)) {
+                                const King& k = std::get<King>(p);
+                                if (k.getColor() == color) {
+                                    kr = i;
+                                    kc = j;
+                                }
+                            }
+                        }
+                    }
+                    if (!temp.cellUnderAttack(kr, kc, color))
+                        return false;
+                }
+            }
+        }
+    }
+    return true;
 }

@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <optional>
+#include <iostream>
 
 class TextureStorage {
 private:

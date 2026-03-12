@@ -15,6 +15,7 @@ class Game {
     std::string pieceToTexture(const PieceVariant& piece) const;
 public:
     bool isGameOver() const { return gameOver; }
+    bool isStalemate() const;
     Game();
     void click(int row, int col);
     const std::vector<std::vector<std::string>>& getBoardView() const;

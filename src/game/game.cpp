@@ -9,6 +9,7 @@ Game::Game() : board(), boardView(8, std::vector<std::string>(8, "")) {
 void Game::click(int row, int col) {
     if (gameOver)
         return;
+
     if (!selectedRow.has_value()) {
         if (board.isOccupied(row, col)) {
             selectedRow = row;
@@ -16,18 +17,22 @@ void Game::click(int row, int col) {
         }
         return;
     }
+
     if (*selectedRow == row && *selectedCol == col) {
         selectedRow.reset();
         selectedCol.reset();
         return;
     }
+
     Move move(*selectedRow, *selectedCol, row, col);
+
     if (board.isLegalMove(move)) {
         board.makeMove(move);
         rebuildBoardView();
-        // проверяем мат
-        for (int r = 0; r < 8; ++r) {
-            for (int c = 0; c < 8; ++c) {
+
+        // проверяем состояние игры
+        for (int r = 0; r < 8 && !gameOver; ++r) {
+            for (int c = 0; c < 8 && !gameOver; ++c) {
 
                 const auto& piece = board.getPiece(r, c);
 
@@ -37,11 +42,17 @@ void Game::click(int row, int col) {
 
                     if (board.isCheckmate(kingColor)) {
                         gameOver = true;
+                        break;
+                    }
+                    else if (board.isStalemate(kingColor)) {
+                        gameOver = true;
+                        break;
                     }
                 }
             }
         }
     }
+
     selectedRow.reset();
     selectedCol.reset();
 }
@@ -92,4 +103,18 @@ const std::vector<std::vector<std::string>>& Game::getBoardView() const {
 std::optional<std::pair<int,int>> Game::getSelected() const {
     if (!selectedRow) return std::nullopt;
     return std::make_pair(*selectedRow, *selectedCol);
+}
+
+bool Game::isStalemate() const {
+    for (int r = 0; r < 8; ++r) {
+        for (int c = 0; c < 8; ++c) {
+            const auto& piece = board.getPiece(r, c);
+            if (std::holds_alternative<King>(piece)) {
+                Color color = std::get<King>(piece).getColor();
+                if (board.isStalemate(color))
+                    return true;
+            }
+        }
+    }
+    return false;
 }

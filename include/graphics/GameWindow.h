@@ -22,6 +22,7 @@ private:
 public:
     sf::Font font;
     sf::Text checkmateText;
+    sf::Text stalemateText;
     GameWindow();
     bool setup();
     void handleClick(int x, int y);

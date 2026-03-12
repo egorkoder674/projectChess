@@ -43,7 +43,7 @@ bool Board::cellUnderAttack(int row, int col, Color ColorOfMoved) const {
 }
 
 
-bool Board::isLegalMove(const Move &move) {
+bool Board::isLegalMove(const Move &move) const {
     auto& pieceMoved = getPiece(move.getFromRow(), move.getFromCol());
     if (auto* bishop = std::get_if<Bishop>(&pieceMoved)) {
         return bishop->canMove(move.getToRow(), move.getToCol(), *this);
@@ -240,5 +240,61 @@ bool Board::isCheckmate(Color color) {
             }
         }
     }
+    return true;
+}
+
+bool Board::isStalemate(Color color) const {
+
+    int kingRow = -1;
+    int kingCol = -1;
+
+    // ищем короля
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+
+            const auto& piece = getPiece(i, j);
+
+            if (std::holds_alternative<King>(piece)) {
+
+                const King& king = std::get<King>(piece);
+
+                if (king.getColor() == color) {
+                    kingRow = i;
+                    kingCol = j;
+                }
+            }
+        }
+    }
+
+    // если король под шахом — это не пат
+    if (cellUnderAttack(kingRow, kingCol, color))
+        return false;
+
+    // проверяем есть ли хотя бы один ход
+    for (int r1 = 0; r1 < 8; ++r1) {
+        for (int c1 = 0; c1 < 8; ++c1) {
+
+            const auto& piece = getPiece(r1, c1);
+
+            if (std::holds_alternative<Empty>(piece))
+                continue;
+
+            Color pieceColor = std::visit([](auto& el){ return el.getColor(); }, piece);
+
+            if (pieceColor != color)
+                continue;
+
+            for (int r2 = 0; r2 < 8; ++r2) {
+                for (int c2 = 0; c2 < 8; ++c2) {
+
+                    Move move(r1, c1, r2, c2);
+
+                    if (isLegalMove(move))
+                        return false;
+                }
+            }
+        }
+    }
+
     return true;
 }

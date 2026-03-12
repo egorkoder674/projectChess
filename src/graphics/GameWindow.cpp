@@ -4,8 +4,11 @@ GameWindow::GameWindow()
         : window(sf::VideoMode({800, 800}), "Chess"),
           renderer(textures),
           boardState(8, std::vector<std::string>(8, "")),
-          checkmateText(font)
+          checkmateText(font),
+          stalemateText(font)
 {}
+
+
 
 bool GameWindow::setup() {
     if (!textures.load("board", "Board.png"))
@@ -40,6 +43,12 @@ bool GameWindow::setup() {
     checkmateText.setCharacterSize(80);
     checkmateText.setFillColor(sf::Color::Black);
     checkmateText.setPosition(sf::Vector2f(180,350));
+
+    stalemateText.setFont(font);
+    stalemateText.setString("STALEMATE!");
+    stalemateText.setCharacterSize(80);
+    stalemateText.setFillColor(sf::Color::Black);
+    stalemateText.setPosition(sf::Vector2f(180,350));
 
     boardState = game.getBoardView();
     renderer.updateBoard(boardState);
@@ -84,9 +93,13 @@ void GameWindow::handleEvents() {
 void GameWindow::draw() {
     window.clear();
     renderer.draw(window);
-    if (game.isGameOver()) {
+    if (game.isStalemate()) {
+        window.draw(stalemateText);
+    }
+    else if (game.isGameOver()) {
         window.draw(checkmateText);
     }
+
     auto selected = game.getSelected();
 
     if (selected) {

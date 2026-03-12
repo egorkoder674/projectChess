@@ -28,11 +28,12 @@ class Board {
 public:
     Board();
     bool isCheckmate(Color color);
+    bool isStalemate(Color color) const;
     bool isOccupied(int row, int col) const;
     const PieceVariant& getPiece(int row, int col) const;
     bool cellUnderAttack(int row, int col, Color ColorOfMoved) const;
     void setPiece(int row, int col, const PieceVariant& piece);
     void makeMove(const Move& move);
-    bool isLegalMove(const Move& move);
+    bool isLegalMove(const Move& move) const;
     void setupInitialPosition();
 };
